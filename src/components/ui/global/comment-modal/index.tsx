@@ -1,0 +1,167 @@
+import { useState } from "react";
+import { Id } from "../../../../../convex/_generated/dataModel";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { toast } from "sonner";
+import { FaCommentDots, FaStar } from "react-icons/fa";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { getInterviewerInfo } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
+function CommentDialog({ interviewId }: { interviewId: Id<"interviews"> }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [comment, setComment] = useState("");
+    const [rating, setRating] = useState("3");
+
+    const addComment = useMutation(api.comments.addComment);
+    const users = useQuery(api.users.getUsers);
+    const existingComments = useQuery(api.comments.getCommentsByInterview, { interviewId });
+
+    const renderStars = (rating: number) => (
+        <div className="flex gap-0.5">
+            {[1, 2, 3, 4, 5].map((starValue) => (
+                <FaStar
+                    key={starValue}
+                    className={`h-4 w-4 ${starValue <= rating ? "fill-primary text-primary" : "text-muted-foreground"}`}
+                />
+            ))}
+        </div>
+    );
+
+    if (existingComments === undefined || users === undefined) return null;
+
+    const handleSubmit = async () => {
+        if (!comment.trim()) {
+            toast.error("Please enter a comment");
+            return;
+        }
+
+        try {
+            await addComment({
+                interviewId,
+                content: comment,
+                rating: parseInt(rating),
+            });
+            toast.success("Comment added successfully");
+            setComment("");
+            setRating("3");
+            setIsOpen(false);
+        } catch (error) {
+            console.error("Failed to add comment:", error);
+            toast.error("Failed to add comment");
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            {/* TRIGGER BUTTON */}
+            <DialogTrigger asChild>
+                <Button variant="secondary" className="w-full">
+                    <FaCommentDots className="h-4 w-4 mr-2" />
+                    Add Comment
+                </Button>
+            </DialogTrigger>
+
+            <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                    <DialogTitle>Interview Comment</DialogTitle>
+                </DialogHeader>
+
+                <div className="space-y-6">
+                    {existingComments.length > 0 && (
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-sm font-medium">Previous Comments</h4>
+                                <Badge variant="outline">
+                                    {existingComments.length} Comment{existingComments.length !== 1 ? "s" : ""}
+                                </Badge>
+                            </div>
+
+                            {/* DISPLAY EXISTING COMMENTS */}
+                            <ScrollArea className="h-[240px]">
+                                <div className="space-y-4">
+                                    {existingComments.map((comment, index) => {
+                                        const interviewer = getInterviewerInfo(users, comment.commenterId);
+                                        return (
+                                            <div key={index} className="rounded-lg border p-4 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <Avatar className="h-8 w-8">
+                                                            <AvatarImage src={interviewer.image} />
+                                                            <AvatarFallback>{interviewer.initials}</AvatarFallback>
+                                                        </Avatar>
+                                                        <div>
+                                                            <p className="text-sm font-medium">{interviewer.name}</p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                {format(comment._creationTime, "MMM d, yyyy • h:mm a")}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    {renderStars(comment.rating)}
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">{comment.content}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </ScrollArea>
+                        </div>
+                    )}
+
+                    <div className="space-y-4">
+                        {/* RATING */}
+                        <div className="space-y-2">
+                            <Label>Rating</Label>
+                            <Select value={rating} onValueChange={setRating}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select rating" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {[1, 2, 3, 4, 5].map((value) => (
+                                        <SelectItem key={value} value={value.toString()}>
+                                            <div className="flex items-center gap-2">{renderStars(value)}</div>
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {/* COMMENT */}
+                        <div className="space-y-2">
+                            <Label>Your Comment</Label>
+                            <Textarea
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                placeholder="Share your detailed comment about the candidate..."
+                                className="h-32"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* BUTTONS */}
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsOpen(false)}>
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSubmit}>Submit</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    );
+}
+export default CommentDialog;

@@ -1,0 +1,10 @@
+export { Header } from './header';
+export { Hero } from './hero';
+export { Features } from './features';
+export { Product } from './product';
+export { Testimonials } from './testimonials';
+export { ComingSoonSection } from './coming-soon-section';
+export { ActionSection } from './action-section';
+export { FAQ } from './faq';
+export { CTA } from './cta';
+export { Footer } from './footer';
