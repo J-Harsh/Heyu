@@ -1,0 +1,7 @@
+{
+    "functions": {
+        "api/convex/clerk-webhook": {
+            "duration": 30
+        }
+    }
+}
