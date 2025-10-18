@@ -142,9 +142,6 @@ body {
     --animate-shiny-text: shiny-text 8s infinite;
   }
 
-  .animate-orbit {
-    animation: orbit calc(var(--duration)*1s) linear infinite;
-  }
 }
 
 @layer base {

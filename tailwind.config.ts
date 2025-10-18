@@ -21,6 +21,9 @@ const config: Config = {
 		'text-orange-500',
 		'from-orange-500/10',
 		'via-orange-500/5',
+		// Animation classes for orbiting circles
+		'animate-orbit',
+		'animate-gradient',
 	],
 	theme: {
 		extend: {
@@ -72,7 +75,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			animation: {
-				orbit: "orbit calc(var(--duration)*0.5s) linear infinite",
+				orbit: "orbit calc(var(--duration)*1s) linear infinite",
 				gradient: "gradient 8s linear infinite",
 			},
 			keyframes: {
