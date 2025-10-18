@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: "HeyU - Modern Interview Platform",
   description: "The modern platform for seamless interview experiences",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/icon.svg",
   },
 };
 

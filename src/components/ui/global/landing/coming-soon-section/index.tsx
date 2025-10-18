@@ -1,42 +1,109 @@
 "use client";
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { BsJournalCode } from 'react-icons/bs';
 import { BiLogoVisualStudio, BiLogoGmail } from 'react-icons/bi';
 import { SiLeetcode } from 'react-icons/si';
+import { FaVideo } from 'react-icons/fa';
 import { BlurFade } from '@/components/ui/blur-fade';
-import { OrbitingCircles } from '@/components/ui/orbiting-circles';
+import { AnimatedBeam } from '@/components/ui/animated-beam';
 
 
 export const ComingSoonSection = () => {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const centerRef = useRef<HTMLDivElement>(null)
+    const vscodeRef = useRef<HTMLDivElement>(null)
+    const leetcodeRef = useRef<HTMLDivElement>(null)
+    const gmailRef = useRef<HTMLDivElement>(null)
+    const videoRef = useRef<HTMLDivElement>(null)
+
     return (
         <section className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#0b0b0d] via-[#0e0e10] to-[#0b0b0d]">
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <BlurFade delay={0} inView className="relative h-96 lg:h-[32rem] w-full overflow-hidden">
-                    <div className="relative w-full h-full flex items-center justify-center">
-                        <BsJournalCode className="text-white/50 text-7xl relative z-10" />
+                <BlurFade delay={0} inView className="flex items-center justify-center w-full">
+                    <div
+                        className="relative h-[280px] w-[280px] md:h-[320px] md:w-[320px] overflow-hidden"
+                        ref={containerRef}
+                    >
+                        {/* Center Logo */}
+                        <div
+                            ref={centerRef}
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 flex size-16 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                        >
+                            <BsJournalCode className="text-[#10b981] text-3xl" />
+                        </div>
 
-                        {/* Inner orbit - VSCode */}
-                        <OrbitingCircles radius={120} duration={20} iconSize={50}>
-                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#10b981] to-[#14b8a6] flex items-center justify-center shadow-lg">
-                                <BiLogoVisualStudio className="text-white text-2xl" />
-                            </div>
-                        </OrbitingCircles>
+                        {/* Top Left Corner - VS Code */}
+                        <div
+                            ref={vscodeRef}
+                            className="absolute top-4 left-4 z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                        >
+                            <BiLogoVisualStudio className="text-blue-600 text-2xl" />
+                        </div>
 
-                        {/* Outer orbit - Email */}
-                        <OrbitingCircles radius={180} duration={30} iconSize={40}>
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#10b981]/80 to-[#14b8a6]/80 flex items-center justify-center shadow-lg">
-                                <BiLogoGmail className="text-white text-xl" />
-                            </div>
-                        </OrbitingCircles>
+                        {/* Top Right Corner - Gmail */}
+                        <div
+                            ref={gmailRef}
+                            className="absolute top-4 right-4 z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                        >
+                            <BiLogoGmail className="text-red-500 text-2xl" />
+                        </div>
 
+                        {/* Bottom Left Corner - LeetCode */}
+                        <div
+                            ref={leetcodeRef}
+                            className="absolute bottom-4 left-4 z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                        >
+                            <SiLeetcode className="text-orange-500 text-2xl" />
+                        </div>
 
+                        {/* Bottom Right Corner - Video */}
+                        <div
+                            ref={videoRef}
+                            className="absolute bottom-4 right-4 z-10 flex size-12 items-center justify-center rounded-full border-2 bg-white p-3 shadow-[0_0_20px_-12px_rgba(0,0,0,0.8)]"
+                        >
+                            <FaVideo className="text-purple-600 text-2xl" />
+                        </div>
 
-                        <OrbitingCircles radius={240} duration={20} iconSize={50}>
-                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#10b981] to-[#14b8a6] flex items-center justify-center shadow-lg">
-                                <SiLeetcode className="text-white text-2xl" />
-                            </div>
-                        </OrbitingCircles>
+                        {/* Top Left to Center */}
+                        <AnimatedBeam
+                            containerRef={containerRef}
+                            fromRef={vscodeRef}
+                            toRef={centerRef}
+                            curvature={0}
+                            gradientStartColor="#10b981"
+                            gradientStopColor="#14b8a6"
+                        />
+
+                        {/* Top Right to Center */}
+                        <AnimatedBeam
+                            containerRef={containerRef}
+                            fromRef={gmailRef}
+                            toRef={centerRef}
+                            curvature={0}
+                            gradientStartColor="#10b981"
+                            gradientStopColor="#14b8a6"
+                        />
+
+                        {/* Bottom Left to Center */}
+                        <AnimatedBeam
+                            containerRef={containerRef}
+                            fromRef={leetcodeRef}
+                            toRef={centerRef}
+                            curvature={0}
+                            gradientStartColor="#10b981"
+                            gradientStopColor="#14b8a6"
+                        />
+
+                        {/* Bottom Right to Center */}
+                        <AnimatedBeam
+                            containerRef={containerRef}
+                            fromRef={videoRef}
+                            toRef={centerRef}
+                            curvature={0}
+                            gradientStartColor="#10b981"
+                            gradientStopColor="#14b8a6"
+                        />
                     </div>
                 </BlurFade>
 
@@ -53,7 +120,8 @@ export const ComingSoonSection = () => {
                     <p className="text-base md:text-lg text-white/70 leading-relaxed">
                         Write and run code directly in our <span className="text-[#10b981] font-semibold">VS Code-like editor</span>,
                         sync your progress with <span className="text-[#10b981] font-semibold">LeetCode</span>,
-                        and stay organized with <span className="text-[#10b981] font-semibold">email & calendar integrations</span>.
+                        stay organized with <span className="text-[#10b981] font-semibold">Gmail integrations</span>,
+                        and conduct <span className="text-[#10b981] font-semibold">video interviews</span> seamlessly.
                         Everything you need to level up your coding journey, all in one place.
                     </p>
 
